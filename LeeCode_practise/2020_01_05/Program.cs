@@ -6,7 +6,7 @@ namespace _2020_01_05
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("这是第二个分支。如果master算是一个分支的话!");
+            Console.WriteLine("这是主分支!");
           
         }
     }
