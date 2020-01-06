@@ -3,8 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>_2020_01_05</RootNamespace>
-    <NoWin32Manifest>true</NoWin32Manifest>
+    <RootNamespace>_2020_01_06</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
