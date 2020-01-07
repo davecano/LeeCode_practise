@@ -7,18 +7,19 @@ namespace _2020_01_05
     {
         static void Main(string[] args)
         {
-        //  var arr=  _202001.Instance.TwoSum2(new[] {2, 7, 11, 15}, 9);
+            //  var arr=  _202001.Instance.TwoSum2(new[] {2, 7, 11, 15}, 9);
 
-       var t= _202001.Instance.AddTwoNumbers(null, null);
-       StringBuilder sb=new StringBuilder();
-       while (t!=null)
-       {
-           sb.Append(t.val+"->");
-           t = t.next;
-       }
+            //var t= _202001.Instance.AddTwoNumbers(null, null);
+            //StringBuilder sb=new StringBuilder();
+            //while (t!=null)
+            //{
+            //    sb.Append(t.val+"->");
+            //    t = t.next;
+            //}
 
-       Console.WriteLine(sb.ToString());
-       Console.ReadKey();
+            //Console.WriteLine(sb.ToString());
+           var arr= _202001.Instance.LengthOfLongestSubstring("pwwkew");
+            Console.ReadKey();
         }
     }
 }

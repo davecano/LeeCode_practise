@@ -163,8 +163,43 @@ namespace _2020_01_05
         #region 无重复字符的最长子串
         public int LengthOfLongestSubstring(string s)
         {
-            return 0;
+
+            int ans = 0;
+            int[] index = new int[128]; // current index of character
+            // try to extend the range [left, right]
+            int left = 0;
+            for (int right = 0; right < s.Length; right++)
+            {
+                //
+                left = Math.Max(index[s[right]], left);
+                ans = Math.Max(ans, right - left + 1);
+                index[s[right]] = right + 1; // set current index of character
+            }
+            return ans;
+
         }
+        //自己解决  c  pafga 暂时有问题，以后再搞
+        //public int LengthOfLongestSubstring(string s)
+        //{
+        //    //哈希来做 key存储 char的值，value 存储下标索引
+        //    IDictionary<char, int> hash = new Dictionary<char, int>();
+        //    int max = 0;
+        //    if (s.Length == 0) return max;
+        //    int left = 0;
+        //    for (int right = 0; right < s.Length; right++)
+        //    {
+        //        if (hash.ContainsKey(s[right]))
+        //        {
+        //            left = s[right];
+        //        }
+
+        //        hash[s[right]] = right;
+        //        max = Math.Max(max, right - left + 1);
+
+        //    }
+
+        //    return max;
+        //}
         #endregion
 
     }

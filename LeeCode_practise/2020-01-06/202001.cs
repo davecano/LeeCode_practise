@@ -241,9 +241,182 @@ namespace _2020_01_06
 
         #endregion
         #region  打印零与奇偶数 https://leetcode-cn.com/problems/print-zero-even-odd/?utm_source=LCUS&utm_medium=ip_redirect_q_uns&utm_campaign=transfer2china
+        //internal class ZeroEvenOdd
+        //{
+        //    private int n;
 
+        //    public ZeroEvenOdd(int n)
+        //    {
+        //        this.n = n;
+        //    }
+
+        //    // printNumber(x) outputs "x", where x is an integer.
+        //    private SpinWait spinWait = new SpinWait();
+       
+        //    private int _continueCondition=0;
+        //    private volatile int index;
+        //    public void Zero(Action<int> printNumber)
+        //    {
+        //        if (0 == n)
+        //        {
+        //            printNumber(0);
+        //            return;
+        //        }
+        //        for (int i = 0; i < n; i++)
+        //        {
+        //            while (!0.Equals(Thread.VolatileRead(ref _continueCondition)))
+        //                spinWait.SpinOnce();
+        //            printNumber(0);
+        //            if (index % 2 == 1) //如果当前是基数，那就转到偶数方法
+        //            {
+        //                //even
+        //                Thread.VolatileWrite(ref _continueCondition, 2);
+        //            }
+        //            else
+        //            {
+        //                //odd
+        //                Thread.VolatileWrite(ref _continueCondition, 1);
+        //            }
+        //        }
+         
+        //    }
+
+        //    public void Even(Action<int> printNumber)
+        //    {
+        //        if (0 == n) return;
+        //        for (int i = 0; i < n/2; i++)
+        //        {
+        //            while (!2.Equals(Thread.VolatileRead(ref _continueCondition))) spinWait.SpinOnce();
+        //            printNumber(++index);
+        //            if (index == n) return;
+        //            Thread.VolatileWrite(ref _continueCondition, 0);
+                   
+        //        }
+ 
+        //    }
+
+        //    public void Odd(Action<int> printNumber)
+        //    {
+        //        if (0 == n) return;
+
+        //        for (int i = 0; i < (n%2==1?n/2+1:n/2); i++)
+        //        {
+        //            while (!1.Equals(Thread.VolatileRead(ref _continueCondition))) spinWait.SpinOnce();
+
+
+        //            printNumber(++index);
+        //            if (index == n) return;
+        //            Thread.VolatileWrite(ref _continueCondition, 0);
+                    
+        //        }
+             
+        //    }
+        //}
+
+        internal class ZeroEvenOdd
+        {
+            private int n;
+            private Semaphore zero = new Semaphore(1, 1);
+            private Semaphore even = new Semaphore(0, 1);
+            private Semaphore odd = new Semaphore(0, 1);
+            private bool flag = false;
+            public ZeroEvenOdd(int n)
+            {
+                this.n = n;
+            }
+
+            //输出0
+            // printNumber(x) outputs "x", where x is an integer.
+            public void Zero(Action<int> printNumber)
+            {
+                for (var i = 0; i < n; i++)
+                {
+                    zero.WaitOne();
+                    flag = false;
+                    printNumber(0);
+                    even.Release(1);
+                    odd.Release(1);
+                }
+            }
+            //输出偶数
+            public void Even(Action<int> printNumber)
+            {
+                for (var i = 1; i <= n; i++)
+                {
+                    even.WaitOne();
+                    if (i % 2 == 0)
+                    {
+                        printNumber(i);
+                    }
+                    lock (this)
+                    {
+                        if (flag)
+                        {
+                            zero.Release(1);
+                        }
+                    }
+                    flag = true;
+                }
+            }
+
+            //输出奇数
+            public void Odd(Action<int> printNumber)
+            {
+                for (var i = 1; i <= n; i++)
+                {
+                    odd.WaitOne();
+                    if (i % 2 != 0)
+                    {
+                        printNumber(i);
+                    }
+                    lock (this)
+                    {
+                        if (flag)
+                        {
+                            zero.Release(1);
+                        }
+                    }
+                    flag = true;
+                }
+            }
+        }
+
+
+        public void DisplayZeroEvenOdd()
+        {
+            var a = new ZeroEvenOdd(10);
+            Task.Run(() => a.Zero(p => Console.WriteLine(p.ToString())));
+            Task.Run(() => a.Even(p => Console.WriteLine(p.ToString())));
+            Task.Run(() => a.Odd(p => Console.WriteLine(p.ToString())));
+        }
         #endregion
 
+        #region H2O 生成 https://leetcode-cn.com/problems/building-h2o/
+        public class H2O
+        {
+
+            public H2O()
+            {
+
+            }
+
+            public void Hydrogen(Action releaseHydrogen)
+            {
+
+                // releaseHydrogen() outputs "H". Do not change or remove this line.
+                releaseHydrogen();
+            }
+
+            public void Oxygen(Action releaseOxygen)
+            {
+
+                // releaseOxygen() outputs "O". Do not change or remove this line.
+                releaseOxygen();
+            }
+        }
+
+
+        #endregion
 
     }
 }
