@@ -18,7 +18,7 @@ namespace _2020_01_05
             //}
 
             //Console.WriteLine(sb.ToString());
-           var arr= _202001.Instance.LengthOfLongestSubstring("pwwkew");
+           _202001.Instance.DisPlayConvert();
             Console.ReadKey();
         }
     }

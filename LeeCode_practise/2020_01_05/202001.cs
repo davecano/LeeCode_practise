@@ -8,7 +8,7 @@ namespace _2020_01_05
 {
     public class _202001 : Singleton<_202001>
     {
-        
+
         #region 两数之和
 
         public int[] TwoSum(int[] nums, int target)
@@ -65,12 +65,12 @@ namespace _2020_01_05
         {
             l1 = new ListNode(1);
             l1.next = new ListNode(8);
-         
+
             l2 = new ListNode(0);
-          
+
             bool isAddOne;
             ListNode l;
-        
+
             int sum = 0;
             //把第一个先捞出来
             if (l1 != null || l2 != null)
@@ -82,10 +82,10 @@ namespace _2020_01_05
                 isAddOne = sum / 10 == 1;
                 l1 = l1.next;
                 l2 = l2.next;
-              
+
             }
             else return null;
-            
+
             ListNode res = l;
             while (l1 != null || l2 != null)
             {
@@ -149,9 +149,9 @@ namespace _2020_01_05
             }
             return tmp.next;
         }
-      
 
-       
+
+
 
         public class ListNode
         {
@@ -201,7 +201,88 @@ namespace _2020_01_05
         //    return max;
         //}
         #endregion
+        #region 4. 寻找两个有序数组的中位数 https://leetcode-cn.com/problems/median-of-two-sorted-arrays/
 
+
+
+        #endregion
+        #region 5. 最长回文子串 https://leetcode-cn.com/problems/longest-palindromic-substring/
+
+        public string LongestPalindrome(string s)
+        {
+            return null;
+        }
+
+        #endregion
+
+        #region Z 字形变换 https://leetcode-cn.com/problems/zigzag-conversion/
+
+    
+        /// <summary>
+        /// x的轨迹   012321 01232 10          4     0121 0121 012                   3
+        /// y的轨迹   000012 333345 6         4     0001 2223 4445                  3
+        /// 对x y进行移位操作
+        /// </summary>
+        /// <param name="numRows"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
+      
+        private (int x,int y) change(int numRows,int i)
+        {
+            var m = i / (2 * (numRows - 1));
+            var n = i % (2 * (numRows - 1));
+            int[] tempx=new int[2*(numRows - 1)];
+            int index = 0;
+            for (int j = 0; j < tempx.Length; j++)
+            {
+             tempx[j] = j < numRows - 1 ? index++ : index--;
+            }
+
+            int x = tempx[i % (2 * (numRows - 1))];
+            int y;
+            if (n < numRows)
+            {
+                y = m * (numRows - 1);
+            }
+            else
+            {
+                y = m * (numRows - 1) + n - numRows+1;
+            }
+
+          
+            return (x, y);
+        }
+        public string Convert(string s, int numRows)
+        {
+            if (numRows == 1) return s;
+            int p = 100;
+            char[,] arr=new char[numRows,p];
+            int x, y;
+            for (var i = 0; i < s.Length; i++)
+            {
+               
+                (x, y) = change(numRows, i);
+                arr[x,y] = s[i];
+              
+            }
+            var list=new List<char>();
+            for (int a = 0; a < numRows; a++)
+            {
+                for (int b = 0; b <p; b++)
+                {
+                   if(arr[a,b]!= '\0')  list.Add(arr[a,b]);
+                }
+            }
+
+            return new string(list.ToArray());
+        }
+
+        public void DisPlayConvert()
+        {
+            Console.WriteLine(this.Convert("A", 1));
+          
+        }
+        #endregion
     }
 
 

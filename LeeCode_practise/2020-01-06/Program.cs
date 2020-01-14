@@ -6,7 +6,7 @@ namespace _2020_01_06
     {
         static void Main(string[] args)
         {
-            _202001.Instance.DisplayZeroEvenOdd();
+            _202001.Instance.DisPlayFuzzBizz();
             Console.ReadKey();
         }
     }
