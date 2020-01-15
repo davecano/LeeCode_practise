@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 using Utils;
 
@@ -215,9 +216,10 @@ namespace _2020_01_05
 
         #endregion
 
+        public class ConvertZ { }
         #region Z 字形变换 https://leetcode-cn.com/problems/zigzag-conversion/
 
-    
+
         /// <summary>
         /// x的轨迹   012321 01232 10          4     0121 0121 012                   3
         /// y的轨迹   000012 333345 6         4     0001 2223 4445                  3
@@ -227,59 +229,133 @@ namespace _2020_01_05
         /// <param name="i"></param>
         /// <returns></returns>
       
-        private (int x,int y) change(int numRows,int i)
-        {
-            var m = i / (2 * (numRows - 1));
-            var n = i % (2 * (numRows - 1));
-            int[] tempx=new int[2*(numRows - 1)];
-            int index = 0;
-            for (int j = 0; j < tempx.Length; j++)
-            {
-             tempx[j] = j < numRows - 1 ? index++ : index--;
-            }
-
-            int x = tempx[i % (2 * (numRows - 1))];
-            int y;
-            if (n < numRows)
-            {
-                y = m * (numRows - 1);
-            }
-            else
-            {
-                y = m * (numRows - 1) + n - numRows+1;
-            }
-
-          
-            return (x, y);
-        }
+    
         public string Convert(string s, int numRows)
         {
+            #region 本地方法
+            (int m, int n) cMath(int i)
+            {
+                return (i / (2 * (numRows - 1)), i % (2 * (numRows - 1)));
+            }
+
+            int[] setTemp()
+            {
+                int[] tempx = new int[2 * (numRows - 1)];
+                int index = 0;
+                for (int j = 0; j < tempx.Length; j++)
+                {
+                    tempx[j] = j < numRows - 1 ? index++ : index--;
+                }
+
+                return tempx;
+            }
+            int setX(int[] tempx, int i)
+            {
+                return tempx[i % (2 * (numRows - 1))];
+            }
+
+            int setY(int i)
+            {   var (m, n) = cMath(i);
+                return  n < numRows ? m * (numRows - 1) : m * (numRows - 1) + n - numRows + 1;
+                
+            }
+
+            #endregion
+
             if (numRows == 1) return s;
-            int p = 100;
+            int p = setY(s.Length)+1;
             char[,] arr=new char[numRows,p];
+            int[] tempX = setTemp();
             int x, y;
             for (var i = 0; i < s.Length; i++)
             {
-               
-                (x, y) = change(numRows, i);
+                x = setX(tempX, i);
+                y = setY(i);
                 arr[x,y] = s[i];
               
             }
-            var list=new List<char>();
+           
+            char[] reChars = new char[s.Length];
+            int cindex = 0;
             for (int a = 0; a < numRows; a++)
             {
                 for (int b = 0; b <p; b++)
                 {
-                   if(arr[a,b]!= '\0')  list.Add(arr[a,b]);
+                    if (arr[a, b] != '\0') reChars[cindex++] = arr[a, b];
                 }
             }
 
-            return new string(list.ToArray());
+            return new string(reChars);
         }
+        public string Convert2(string s, int numRows)
+        {
+            if (numRows == 1) return s;
+           
 
+            List<List<char>> rows = new List<List<char>>();
+            for (int i = 0; i < s.Length && i < numRows; i++)
+            {
+                rows.Add(new List<char>());
+            }
+            bool isdown = false;
+            int row = 0;
+            foreach (var c in s)
+            {
+                rows[row].Add(c);
+                if (row == 0 || row == numRows - 1)
+                {
+                    isdown = !isdown;
+                }
+                row += isdown ? 1 : -1;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var l in rows)
+            {
+                sb.Append(new string(l.ToArray()));
+            }
+
+            return sb.ToString();
+        }
+        /// <summary>
+        /// 官方做法再优化
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="numRows"></param>
+        /// <returns></returns>
+        public string Convert3(string s, int numRows)
+        {
+            if (numRows == 1) return s;
+
+
+            List<List<char>> rows = new List<List<char>>();
+            for (int i = 0; i < s.Length && i < numRows; i++)
+            {
+                rows.Add(new List<char>());
+            }
+            bool isdown = false;
+            int row = 0;
+            foreach (var c in s)
+            {
+                rows[row].Add(c);
+                if (row == 0 || row == numRows - 1)
+                {
+                    isdown = !isdown;
+                }
+                row += isdown ? 1 : -1;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var l in rows)
+            {
+                sb.Append(new string(l.ToArray()));
+            }
+
+            return sb.ToString();
+        }
         public void DisPlayConvert()
         {
-            Console.WriteLine(this.Convert("A", 1));
+            Console.WriteLine(this.Convert("PAYPALISHIRING",3));
           
         }
         #endregion
