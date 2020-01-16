@@ -18,7 +18,7 @@ namespace _2020_01_05
             //}
 
             //Console.WriteLine(sb.ToString());
-           _202001.Instance.DisPlayConvert();
+           _202001.Instance.Reverse(321);
             Console.ReadKey();
         }
     }

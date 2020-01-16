@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Utils;
@@ -215,8 +216,6 @@ namespace _2020_01_05
         }
 
         #endregion
-
-        public class ConvertZ { }
         #region Z 字形变换 https://leetcode-cn.com/problems/zigzag-conversion/
 
 
@@ -228,8 +227,8 @@ namespace _2020_01_05
         /// <param name="numRows"></param>
         /// <param name="i"></param>
         /// <returns></returns>
-      
-    
+
+
         public string Convert(string s, int numRows)
         {
             #region 本地方法
@@ -255,31 +254,32 @@ namespace _2020_01_05
             }
 
             int setY(int i)
-            {   var (m, n) = cMath(i);
-                return  n < numRows ? m * (numRows - 1) : m * (numRows - 1) + n - numRows + 1;
-                
+            {
+                var (m, n) = cMath(i);
+                return n < numRows ? m * (numRows - 1) : m * (numRows - 1) + n - numRows + 1;
+
             }
 
             #endregion
 
             if (numRows == 1) return s;
-            int p = setY(s.Length)+1;
-            char[,] arr=new char[numRows,p];
+            int p = setY(s.Length) + 1;
+            char[,] arr = new char[numRows, p];
             int[] tempX = setTemp();
             int x, y;
             for (var i = 0; i < s.Length; i++)
             {
                 x = setX(tempX, i);
                 y = setY(i);
-                arr[x,y] = s[i];
-              
+                arr[x, y] = s[i];
+
             }
-           
+
             char[] reChars = new char[s.Length];
             int cindex = 0;
             for (int a = 0; a < numRows; a++)
             {
-                for (int b = 0; b <p; b++)
+                for (int b = 0; b < p; b++)
                 {
                     if (arr[a, b] != '\0') reChars[cindex++] = arr[a, b];
                 }
@@ -290,7 +290,7 @@ namespace _2020_01_05
         public string Convert2(string s, int numRows)
         {
             if (numRows == 1) return s;
-           
+
 
             List<List<char>> rows = new List<List<char>>();
             for (int i = 0; i < s.Length && i < numRows; i++)
@@ -355,11 +355,82 @@ namespace _2020_01_05
         }
         public void DisPlayConvert()
         {
-            Console.WriteLine(this.Convert("PAYPALISHIRING",3));
-          
+            Console.WriteLine(this.Convert("PAYPALISHIRING", 3));
+
         }
         #endregion
+        #region 8. 字符串转换整数 (atoi) https://leetcode-cn.com/problems/string-to-integer-atoi/
+        public int MyAtoi(string str) //还有点问题
+        {
+            if (string.IsNullOrWhiteSpace(str)) return 0;
+            int i;
+            int x=1;
+            for (i = 0; i < str.Length; i++)
+            {
+               if(' '.Equals(str[i])) continue;
+               if ('-'.Equals(str[i]) || '+'.Equals(str[i]))
+               {
+                   i++;
+                   x = '+'.Equals(str[i]) ? 1 : -1; 
+                   if (i.Equals(str.Length)) return 0;
+                   break;
+               }
+               if (char.IsNumber(str[i])) break;
+               return 0;
+            }
+            char[] res=new char[10];
+            int index = 0;
+            int j = i;
+            for (; j < str.Length; j++)
+            {
+                if (!char.IsNumber(str[i])&&j==i) return 0;
+                if (char.IsNumber(str[i])) res[index++] =str[i];
+                else break;
+
+            }
+
+            string t = new string(res);
+            if (int.TryParse(t,out var resint))
+            {
+                return resint*x;
+            }
+
+            if (x == 1) return int.MaxValue;
+             return int.MinValue;
+           
+        }
+        #endregion
+
+        #region 7. 整数反转 https://leetcode-cn.com/problems/reverse-integer/
+        public int Reverse(int x)
+        {
+            int p = x > 0 ? 1 : -1;
+            x = x*p;
+            string s = new string(x.ToString().Reverse().ToArray());
+            if (int.TryParse(s, out var tResult))
+            {
+                return tResult*p;
+            }
+
+            return 0;
+        }
+
+        public int Reverse2(int x)
+        {
+            int ans = 0;
+            while (x != 0)
+            {
+                int pop = x % 10;
+                if (ans > int.MaxValue / 10 || (ans == int.MaxValue / 10 && pop > 7))
+                    return 0;
+                if (ans < int.MinValue / 10 || (ans == int.MinValue / 10 && pop < -8))
+                    return 0;
+                ans = ans * 10 + pop;
+                x /= 10;
+            }
+            return ans;
+        }
+
+        #endregion
     }
-
-
 }
