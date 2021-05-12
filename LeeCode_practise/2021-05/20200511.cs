@@ -147,25 +147,55 @@ namespace _2021_05
                 if (s[i] == '-')
                 {
                     isNagative = true;
-                    continue;
+                    i++;
+                    break;
                 }
-                if (s[i] == '+') continue;
+                if (s[i] == '+') {
+                    i++;
+                    break;
+                }
                 if (char.IsDigit(s[i])) break;
+                else return 0;
+            
             }
-            int index = 0;
+        
             for (int j = i; j < s.Length; j++)
             {
                 if (char.IsDigit(s[j]))
                 {
-                    var newres = res * index * 10 + (s[j]-'0');
-                    if (newres - (s[j] - '0') != res * index * 10) return isNagative ? int.MinValue : int.MaxValue;
+                    var newres = res  * 10 + (s[j]-'0');
+                    if (newres/10 != res) 
+                        return isNagative ? int.MinValue : int.MaxValue;
                     res = newres;
-                    index++;
                     continue;
                 }
                 break;
             }
             return isNagative? res*-1: res;
+        }
+        /// <summary>
+        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnr003/
+        /// </summary>
+        /// <param name="haystack"></param>
+        /// <param name="needle"></param>
+        /// <returns></returns>
+        public int StrStr(string haystack, string needle)
+        {
+            if (needle == string.Empty) return 0;
+            if (haystack == string.Empty) return -1;
+            int index = 0;
+            for (int i = 0; i < haystack.Length; i++)
+            {
+                if (haystack[i] == needle[index])
+                {
+                    if (index == needle.Length - 1) return i - needle.Length+1;
+                    index++;
+                    continue;
+                }
+                i -= index;
+                index = 0;
+            }
+            return -1;
         }
     }
 }
