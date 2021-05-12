@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "2020_03_26": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
