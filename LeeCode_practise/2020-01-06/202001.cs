@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -241,9 +242,379 @@ namespace _2020_01_06
 
         #endregion
         #region  打印零与奇偶数 https://leetcode-cn.com/problems/print-zero-even-odd/?utm_source=LCUS&utm_medium=ip_redirect_q_uns&utm_campaign=transfer2china
+        //internal class ZeroEvenOdd
+        //{
+        //    private int n;
+
+        //    public ZeroEvenOdd(int n)
+        //    {
+        //        this.n = n;
+        //    }
+
+        //    // printNumber(x) outputs "x", where x is an integer.
+        //    private SpinWait spinWait = new SpinWait();
+       
+        //    private int _continueCondition=0;
+        //    private volatile int index;
+        //    public void Zero(Action<int> printNumber)
+        //    {
+        //        if (0 == n)
+        //        {
+        //            printNumber(0);
+        //            return;
+        //        }
+        //        for (int i = 0; i < n; i++)
+        //        {
+        //            while (!0.Equals(Thread.VolatileRead(ref _continueCondition)))
+        //                spinWait.SpinOnce();
+        //            printNumber(0);
+        //            if (index % 2 == 1) //如果当前是基数，那就转到偶数方法
+        //            {
+        //                //even
+        //                Thread.VolatileWrite(ref _continueCondition, 2);
+        //            }
+        //            else
+        //            {
+        //                //odd
+        //                Thread.VolatileWrite(ref _continueCondition, 1);
+        //            }
+        //        }
+         
+        //    }
+
+        //    public void Even(Action<int> printNumber)
+        //    {
+        //        if (0 == n) return;
+        //        for (int i = 0; i < n/2; i++)
+        //        {
+        //            while (!2.Equals(Thread.VolatileRead(ref _continueCondition))) spinWait.SpinOnce();
+        //            printNumber(++index);
+        //            if (index == n) return;
+        //            Thread.VolatileWrite(ref _continueCondition, 0);
+                   
+        //        }
+ 
+        //    }
+
+        //    public void Odd(Action<int> printNumber)
+        //    {
+        //        if (0 == n) return;
+
+        //        for (int i = 0; i < (n%2==1?n/2+1:n/2); i++)
+        //        {
+        //            while (!1.Equals(Thread.VolatileRead(ref _continueCondition))) spinWait.SpinOnce();
+
+
+        //            printNumber(++index);
+        //            if (index == n) return;
+        //            Thread.VolatileWrite(ref _continueCondition, 0);
+                    
+        //        }
+             
+        //    }
+        //}
+
+        internal class ZeroEvenOdd
+        {
+            private int n;
+            private Semaphore zero = new Semaphore(1, 1);
+            private Semaphore even = new Semaphore(0, 1);
+            private Semaphore odd = new Semaphore(0, 1);
+            private bool flag = false;
+            public ZeroEvenOdd(int n)
+            {
+                this.n = n;
+            }
+
+            //输出0
+            // printNumber(x) outputs "x", where x is an integer.
+            public void Zero(Action<int> printNumber)
+            {
+                for (var i = 0; i < n; i++)
+                {
+                    zero.WaitOne();
+                    flag = false;
+                    printNumber(0);
+                    even.Release(1);
+                    odd.Release(1);
+                }
+            }
+            //输出偶数
+            public void Even(Action<int> printNumber)
+            {
+                for (var i = 1; i <= n; i++)
+                {
+                    even.WaitOne();
+                    if (i % 2 == 0)
+                    {
+                        printNumber(i);
+                    }
+                    lock (this)
+                    {
+                        if (flag)
+                        {
+                            zero.Release(1);
+                        }
+                    }
+                    flag = true;
+                }
+            }
+
+            //输出奇数
+            public void Odd(Action<int> printNumber)
+            {
+                for (var i = 1; i <= n; i++)
+                {
+                    odd.WaitOne();
+                    if (i % 2 != 0)
+                    {
+                        printNumber(i);
+                    }
+                    lock (this)
+                    {
+                        if (flag)
+                        {
+                            zero.Release(1);
+                        }
+                    }
+                    flag = true;
+                }
+            }
+        }
+
+
+        public void DisplayZeroEvenOdd()
+        {
+            var a = new ZeroEvenOdd(10);
+            Task.Run(() => a.Zero(p => Console.WriteLine(p.ToString())));
+            Task.Run(() => a.Even(p => Console.WriteLine(p.ToString())));
+            Task.Run(() => a.Odd(p => Console.WriteLine(p.ToString())));
+        }
+        #endregion
+
+        #region H2O 生成 https://leetcode-cn.com/problems/building-h2o/
+
+        public void DisplayOutPutH20()
+        {
+            H2O h2o = new H2O();
+            for (int i = 0; i < 3; i++)
+            {
+                Task.Run(() => h2o.Oxygen(() => Console.WriteLine("O")));
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                Task.Run(() => h2o.Hydrogen(() => Console.WriteLine("H")));
+            }
+        }
+        public class H2O
+        {
+            private Semaphore hSemaphore=new Semaphore(2,2);
+            private Semaphore oSemaphore = new Semaphore(0, 1);
+            private int hcount = 0;
+            public H2O()
+            {
+
+            }
+
+            public void Hydrogen(Action releaseHydrogen)
+            {
+
+                hSemaphore.WaitOne();
+                releaseHydrogen();
+                Interlocked.Increment(ref hcount);
+                if (hcount % 2 == 0) 
+                    oSemaphore.Release(1);
+
+            }
+
+           
+
+            public void Oxygen(Action releaseOxygen)
+            {
+                oSemaphore.WaitOne();
+                // releaseOxygen() outputs "O". Do not change or remove this line.
+                releaseOxygen();
+                hSemaphore.Release(2);
+            }
+
+
+        }
+
 
         #endregion
 
+        #region 1195. 交替打印字符串 https://leetcode-cn.com/problems/fizz-buzz-multithreaded/
 
+        public class FizzBuzz
+        {
+            private int n;
+            private Semaphore semaphore;
+            private int curNum;
+            public FizzBuzz(int n)
+            {
+                this.n = n;
+                semaphore = new Semaphore(1, 1);
+                curNum = 1;
+            }
+
+            // printFizz() outputs "fizz".
+            public void Fizz(Action printFizz)
+            {
+                while (curNum<=n)
+                {
+                    try
+                    {
+                        semaphore.WaitOne();
+                        if (curNum % 3 == 0 && curNum % 5 != 0 && curNum <= n)
+                        {
+                            printFizz();
+                            curNum++;
+                        }
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }
+              
+            }
+
+            // printBuzzz() outputs "buzz".
+            public void Buzz(Action printBuzz)
+            {
+
+                while (curNum <= n)
+                {
+                    try
+                    {
+                        semaphore.WaitOne();
+                      
+                        if (curNum % 5 == 0 && curNum % 3 != 0 && curNum <= n)
+                        {
+                            printBuzz();
+                            curNum++;
+                        }
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }
+                  
+            }
+
+            // printFizzBuzz() outputs "fizzbuzz".
+            public void Fizzbuzz(Action printFizzBuzz)
+            {
+                while (curNum<=n)
+                {
+                    try
+                    {
+                        semaphore.WaitOne();
+                      
+                        if (curNum % 3 == 0 && curNum % 5 == 0&& curNum <= n)
+                        {
+                            printFizzBuzz();
+                            curNum++;
+                        }
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }
+             
+            }
+
+            // printNumber(x) outputs "x", where x is an integer.
+            public void Number(Action<int> printNumber)
+            {
+
+                while (curNum<=n)
+                {
+                    try
+                    {
+                        semaphore.WaitOne();
+                        
+                        if (curNum % 3 != 0 && curNum % 5 != 0&& curNum <= n)
+                        {
+                            printNumber(curNum);
+                            curNum++;
+                        }
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }
+            
+            }
+
+            }
+            //public class FizzBuzz
+            //{
+            //    private int n;
+            //    private SemaphoreSlim semaSlim;
+            //    private int startNum;
+
+            //    public FizzBuzz(int n)
+            //    {
+            //        this.n = n;
+            //        startNum = 1;
+            //        semaSlim = new SemaphoreSlim(1);
+            //    }
+
+            //    private void CommonPrint(Func<int, bool> canChange, Action ac)
+            //    {
+            //        while (startNum <= n)
+            //        {
+            //            semaSlim.Wait();
+
+            //            if (startNum <= n && canChange(startNum))
+            //            {
+            //                ac();
+            //                startNum++;
+            //            }
+
+            //            semaSlim.Release();
+            //        }
+            //    }
+
+            //    // printFizz() outputs "fizz".
+            //    public void Fizz(Action printFizz) => CommonPrint((num) => num % 3 == 0 && num % 5 != 0, printFizz);
+
+            //    // printBuzzz() outputs "buzz".
+            //    public void Buzz(Action printBuzz) => CommonPrint((num) => num % 5 == 0 && num % 3 != 0, printBuzz);
+
+            //    // printFizzBuzz() outputs "fizzbuzz".
+            //    public void Fizzbuzz(Action printFizzBuzz) => CommonPrint((num) => num % 5 == 0 && num % 3 == 0, printFizzBuzz);
+
+            //    // printNumber(x) outputs "x", where x is an integer.
+            //    public void Number(Action<int> printNumber)
+            //    {
+            //        while (startNum <= n)
+            //        {
+            //            semaSlim.Wait();
+
+            //            if (startNum <= n && startNum % 5 != 0 && startNum % 3 != 0)
+            //                printNumber(startNum++);
+
+            //            semaSlim.Release();
+            //        }
+            //    }
+            //}
+
+            public void DisPlayFuzzBizz()
+        {
+            var fz=new FizzBuzz(15);
+            //for (int i = 0; i < 15; i++)
+            //{
+                Task.Run(() => fz.Fizz(() => Console.WriteLine("Fizz")));
+                Task.Run(() => fz.Buzz(() => Console.WriteLine("Buzz")));
+                Task.Run(() => fz.Fizzbuzz(() => Console.WriteLine("Fizzbuzz")));
+                Task.Run(() => fz.Number(p => Console.WriteLine(p)));
+            //}
+        }
+        #endregion
     }
 }
