@@ -167,6 +167,116 @@ namespace _2020_01_05
         }
         #endregion
 
+        #region LCP 1. 猜数字 https://leetcode-cn.com/problems/guess-numbers/
+        public int game(int[] guess, int[] answer)
+        {
+            int times = 0;
+            for (int i = 0; i < 3;i++)
+            {
+                if (guess[i].Equals(answer[i]))
+                {
+                    times++;
+                }
+            }
+
+            return times;
+        }
+
+
+        #endregion
+
+        #region LCP 3. 机器人大冒险 https://leetcode-cn.com/problems/programmable-robot/ 这里只有java版本，所以用for\
+      
+        public bool robot(string command, int[][] obstacles, int x, int y)
+        {
+            //int p = 0;
+            //int k = 0;
+            //IDictionary<char, Action> hash = new Dictionary<char, Action>();
+            //hash['U'] = () => p++;
+            //hash['R'] = () => k++;
+
+            //bool isSuccess=true;
+            //int[,] temp = { { p }, { k } };
+            //foreach (char c in command)
+            //{
+            //    hash[c]();
+            //    if (p.Equals(x) && k.Equals(y))
+            //    {
+            //        break;
+            //    }
+            //   if(obstacles[0]==new[]{p,k})
+            //   {
+            //       isSuccess = false;
+            //       break;
+            //    }
+            //}
+
+            //return isSuccess;
+
+            int p = 0;
+            int k = 0;
+            bool isSuccess = true;
+            foreach (char c in command)
+            {
+                if ('U'.Equals(c)) p++;
+                else if ('R'.Equals(c)) k++;
+                else return false;
+                if (p.Equals(x) && k.Equals(y))
+                {
+                    break;
+                }
+                if (obstacles[0] == new[] { p, k })
+                {
+                    isSuccess = false;
+                    break;
+                }
+            }
+
+            return isSuccess;
+        }
+
+
+        #endregion
+
+        #region 利用 栈实现计算器试一试昂 有问题 以后再搞吧
+
+
+        public int _operator(char c)
+        {
+            
+            if ('('.Equals(c)) return 1;
+            if ('+'.Equals(c) || '-'.Equals(c)) return 2;
+            if ('*'.Equals(c) || '/'.Equals(c)) return 3;
+            if (')'.Equals(c)) return 4;
+            return -1;
+        }
+        public double Canculate(string s)
+        {
+            Stack<double> s1=new Stack<double>();
+            Stack<char> s2=new Stack<char>();
+            if (string.IsNullOrWhiteSpace(s)) throw new Exception();
+            string str = string.Empty;
+            foreach (char c in s)
+            {
+                bool needCombine = false;
+                if (c<'9'&&c>'1') //是数字
+                {
+                    if(needCombine) { }
+                    s1.Push(c);
+                    
+                }
+                else
+                {
+                    int _op = _operator(c);
+                    if(_op==-1) throw new Exception();
+                }
+            }
+
+            return 0;
+        }
+        
+
+        #endregion
     }
 
 
