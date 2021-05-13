@@ -270,14 +270,22 @@ namespace _2021_05
             return indexs;
         }
         /// <summary>
-        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/x2f9gg/
+        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnhhkv/
         /// </summary>
-        /// <param name="board"></param>
-        /// <returns></returns>
-        //public bool IsValidSudoku(char[][] board)
-        //{
-
-        //}
+        /// <param name="matrix"></param>
+        public void Rotate(int[][] matrix)
+        {
+            int len = matrix.Length;
+            for (int i = 0; i < len; i++)
+            {
+                for (int j = 0; j < len - i; j++)
+                {
+                    int temp = matrix[i][j];
+                    matrix[i][j] = matrix[j][len - i-1];
+                    matrix[j][len - i - 1] = temp;
+                }
+            }
+        }
     }
 }
   
