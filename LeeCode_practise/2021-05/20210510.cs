@@ -269,7 +269,15 @@ namespace _2021_05
 
             return indexs;
         }
-      
+        /// <summary>
+        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/x2f9gg/
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        //public bool IsValidSudoku(char[][] board)
+        //{
+
+        //}
     }
 }
   

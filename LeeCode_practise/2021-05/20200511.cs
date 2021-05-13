@@ -197,5 +197,63 @@ namespace _2021_05
             }
             return -1;
         }
+        /// <summary>
+        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnpvdm/
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public string CountAndSay(int n)
+        {
+
+            if (n == 1) return "1";
+            var num = CountAndSay(n-1);
+            int index = 0;
+            var resList = new List<char>();
+            int numCount = 1;
+            int i = 0;
+            for (; i < num.Length - 1; i++)
+            {
+                if (num[i] == num[++index])
+                {
+                    numCount++;
+                    continue;
+                }
+                resList.Add((char)(numCount + '0'));
+                resList.Add((char)(num[i]));
+                numCount = 1;
+            }
+            resList.Add((char)(numCount + '0'));
+            resList.Add((char)(num[i]));
+            return new string(resList.ToArray());
+        }
+        /// <summary>
+        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnmav1/
+        /// </summary>
+        /// <param name="strs"></param>
+        /// <returns></returns>
+        public string LongestCommonPrefix(string[] strs)
+        {
+
+            var resList = new List<char>();
+            var i= 0;
+            for (; i < strs.Select(x => x.Length).Min(); i++)
+            {
+                var index = 0;
+                var predicate = true;
+                for (int j = 0; j < strs.Length - 1; j++)
+                {
+                    if (strs[j][i] != strs[++index][i])
+                    {
+                        predicate = false;
+                        break;
+                    }
+                }
+
+                if (!predicate) break;
+               
+            }
+
+          return strs[0].Substring(0, i);
+        }
     }
 }
