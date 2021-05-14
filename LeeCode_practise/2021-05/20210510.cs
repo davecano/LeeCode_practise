@@ -276,13 +276,29 @@ namespace _2021_05
         public void Rotate(int[][] matrix)
         {
             int len = matrix.Length;
-            for (int i = 0; i < len; i++)
+            //上下交换
+            int p1 = 0;
+            int p2 = len - 1;
+            while (p1<p2)
             {
-                for (int j = 0; j < len - i; j++)
+                var temp = matrix[p1];
+                matrix[p1] = matrix[p2];
+                matrix[p2] = temp;
+                p1++;
+                p2--;
+            }
+
+            //对角线交换 永远考虑列》行的
+            for (int i = 0; i < len-1; i++)
+            {
+                for (int j = 1; j < len; j++)
                 {
-                    int temp = matrix[i][j];
-                    matrix[i][j] = matrix[j][len - i-1];
-                    matrix[j][len - i - 1] = temp;
+                    if (i < j)
+                    {
+                        var temp = matrix[i][j];
+                        matrix[i][j] = matrix[j][i];
+                        matrix[j][i] = temp;
+                    }
                 }
             }
         }
