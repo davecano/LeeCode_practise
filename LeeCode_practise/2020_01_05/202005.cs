@@ -5,28 +5,31 @@ using Utils;
 
 namespace _2020_01_05
 {
-    public class _202005:Singleton<_202005>
+    public class _202005 : Singleton<_202005>
     {
         //父类传值给子类
         public static TChild AutoCopy<TParent, TChild>(TParent parent) where TChild : TParent
         {
             TChild child = Activator.CreateInstance<TChild>();
 
-            var propertyInfos = parent.GetType().GetProperties();
-            foreach (var propertyInfo in propertyInfos)
+            System.Reflection.PropertyInfo[] propertyInfos = parent.GetType().GetProperties();
+            foreach (System.Reflection.PropertyInfo propertyInfo in propertyInfos)
             {
                 if (propertyInfo.CanRead && propertyInfo.CanWrite)
                 {
-                    propertyInfo.SetValue(child,propertyInfo.GetValue(parent,null),null);
-                        
+                    propertyInfo.SetValue(child, propertyInfo.GetValue(parent, null), null);
+
                 }
             }
-            return child; 
+            return child;
         }
 
-        public static List<TChild> AutoListCopy<TParent, TChild>(List<TParent> parentList) where TChild : TParent, new()=> parentList.Select(AutoCopy<TParent, TChild>).ToList();
+        public static List<TChild> AutoListCopy<TParent, TChild>(List<TParent> parentList) where TChild : TParent, new()
+        {
+            return parentList.Select(AutoCopy<TParent, TChild>).ToList();
+        }
 
-        class Person
+        private class Person
         {
             public Person(string name)
             {
@@ -40,7 +43,7 @@ namespace _2020_01_05
             public string Name { get; set; }
         }
 
-        class Male:Person
+        private class Male : Person
         {
             public Male(string name, string kill) : base(name)
             {
@@ -51,7 +54,7 @@ namespace _2020_01_05
             {
             }
 
-       
+
 
             public string Kill { get; set; }
             public override string ToString()
@@ -62,13 +65,13 @@ namespace _2020_01_05
 
         public static void Display()
         {
-            var persons = new List<Person>()
+            List<Person> persons = new List<Person>()
             {
                 new Person("小明"),
                 new Person("小s")
             };
             List<Male> autoListCopy = AutoListCopy<Person, Male>(persons);
-            AutoListCopy<Person,Male>(persons).ForEach(Console.WriteLine);
+            AutoListCopy<Person, Male>(persons).ForEach(Console.WriteLine);
         }
 
     }

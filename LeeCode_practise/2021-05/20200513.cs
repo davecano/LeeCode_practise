@@ -3,25 +3,22 @@
 * 创建时间 ：2021/5/13 19:00:15
 * 描述说明： 
 ****************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Utils;
 
 namespace _2021_05
 {
-    class ListNode
+    internal class ListNode
     {
         public int val;
         public ListNode next;
         public ListNode(int x) { val = x; }
     }
 
-    class _20200513 : Singleton<_20200513>
-    { 
+    internal class _20200513 : Singleton<_20200513>
+    {
         /// <summary>
-       /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnarn7/
-       /// </summary>
+        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnarn7/
+        /// </summary>
         public void DeleteNode(ListNode node)
         {
             node.val = node.next.val;
@@ -36,13 +33,17 @@ namespace _2021_05
         public ListNode RemoveNthFromEnd(ListNode head, int n)
         {
             //快慢指针
-            var fast = head;
-            var slow = head;
+            ListNode fast = head;
+            ListNode slow = head;
             for (int i = 0; i < n; i++)
             {
                 fast = fast.next;
             }
-            if (fast == null) return head.next;
+            if (fast == null)
+            {
+                return head.next;
+            }
+
             while (fast.next != null)
             {
                 fast = fast.next;
@@ -75,11 +76,11 @@ namespace _2021_05
             //}
             //p2.next = null;
             //return resNode;
-            ListNode res =new ListNode(0);
-            var rHead = res;
-            while (head!=null)
+            ListNode res = new ListNode(0);
+            ListNode rHead = res;
+            while (head != null)
             {
-                var temp = head.next;
+                ListNode temp = head.next;
                 head.next = rHead.next;
                 rHead.next = head;
                 head = temp;
@@ -98,7 +99,9 @@ namespace _2021_05
         {
             //只要有一个为空，就返回另一个
             if (l1 == null || l2 == null)
+            {
                 return l2 == null ? l1 : l2;
+            }
             //把小的赋值给first
             ListNode first = (l2.val < l1.val) ? l2 : l1;
             first.next = MergeTwoLists(first.next, first == l1 ? l2 : l1);
@@ -142,12 +145,17 @@ namespace _2021_05
             temp = head;
             return check(head);
         }
-        ListNode temp;
+
+        private ListNode temp;
         private bool check(ListNode head)
         {
-            if (head == null) return true;
-            var res = check(head.next) && head.val == temp.val;
-                temp = temp.next;
+            if (head == null)
+            {
+                return true;
+            }
+
+            bool res = check(head.next) && head.val == temp.val;
+            temp = temp.next;
             return res;
         }
         /// <summary>
@@ -158,11 +166,14 @@ namespace _2021_05
         public bool HasCycle(ListNode head)
         {
             ListNode slow = head, fast = head;
-            while (fast!=null&&fast.next!=null)
+            while (fast != null && fast.next != null)
             {
                 slow = slow.next;
                 fast = fast.next.next;
-                if (slow == fast) return true;
+                if (slow == fast)
+                {
+                    return true;
+                }
             }
             return false;
         }

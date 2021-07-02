@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Utils;
 
 namespace _2021_05
@@ -20,13 +19,18 @@ namespace _2021_05
      /// <returns></returns>
         public int RemoveDuplicates(int[] nums)
         {
-            if (nums == null || nums.Length == 0) return 0;
+            if (nums == null || nums.Length == 0)
+            {
+                return 0;
+            }
+
             int left = 0;
             for (int right = 1; right < nums.Length; right++)
             {
                 if (nums[right] != nums[left])
+                {
                     nums[++left] = nums[right];
-
+                }
             }
             return ++left;
         }
@@ -51,11 +55,15 @@ namespace _2021_05
 
             //}
             //return Profit;
-            if (prices == null || prices.Length < 2) return 0;
-            int total = 0;
-            for (int i = 0; i < prices.Length-1; i++)
+            if (prices == null || prices.Length < 2)
             {
-                total += Math.Max(prices[i+1]-prices[i] ,0);
+                return 0;
+            }
+
+            int total = 0;
+            for (int i = 0; i < prices.Length - 1; i++)
+            {
+                total += Math.Max(prices[i + 1] - prices[i], 0);
             }
             return total;
         }
@@ -66,7 +74,10 @@ namespace _2021_05
         /// <param name="k"></param>
         public void Rotate(int[] nums, int k)
         {
-            if (nums == null || nums.Length == 0||k<0) return;
+            if (nums == null || nums.Length == 0 || k < 0)
+            {
+                return;
+            }
 
             //int[] temp = new int[nums.Length];
             //for (int i = 0; i < nums.Length; i++)
@@ -88,7 +99,7 @@ namespace _2021_05
         /// <returns></returns>
         public bool ContainsDuplicate(int[] nums)
         {
-            var set = new HashSet<int>();
+            HashSet<int> set = new HashSet<int>();
             for (int i = 0; i < nums.Length; i++)
             {
                 set.Add(nums[i]);
@@ -103,7 +114,7 @@ namespace _2021_05
         public int SingleNumber(int[] nums)
         {
             int reduce = 0;
-            foreach (var num in nums)
+            foreach (int num in nums)
             {
                 reduce ^= num;
             }
@@ -137,22 +148,22 @@ namespace _2021_05
             //}
             //return res.ToArray();
 
-            var map = new Dictionary<int, int>();
-            var res = new List<int>();
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            List<int> res = new List<int>();
             for (int i = 0; i < nums1.Length; i++)
             {
-                map[nums1[i]] = (map.TryGetValue(nums1[i], out var t) ? t : 0) + 1;
+                map[nums1[i]] = (map.TryGetValue(nums1[i], out int t) ? t : 0) + 1;
             }
             for (int i = 0; i < nums2.Length; i++)
             {
-                if(map.TryGetValue(nums2[i],out var t))
+                if (map.TryGetValue(nums2[i], out int t))
                 {
                     if (t > 0)
                     {
                         res.Add(nums2[i]);
                         map[nums2[i]] = map[nums2[i]] - 1;
                     }
-                 
+
                 }
             }
             return res.ToArray();
@@ -164,9 +175,9 @@ namespace _2021_05
         /// <returns></returns>
         public int[] PlusOne(int[] digits)
         {
-            var list = digits.ToList();
+            List<int> list = digits.ToList();
             bool isAdd = false;
-            for (int i = list.Count()-1; i >=0; i--)
+            for (int i = list.Count() - 1; i >= 0; i--)
             {
                 if (list[i] < 9)
                 {
@@ -181,8 +192,11 @@ namespace _2021_05
                 }
             }
             if (isAdd)
-                list.Insert(0,1);
-             return list.ToArray();
+            {
+                list.Insert(0, 1);
+            }
+
+            return list.ToArray();
         }
         /// <summary>
         /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/x2ba4i/
@@ -279,9 +293,9 @@ namespace _2021_05
             //上下交换
             int p1 = 0;
             int p2 = len - 1;
-            while (p1<p2)
+            while (p1 < p2)
             {
-                var temp = matrix[p1];
+                int[] temp = matrix[p1];
                 matrix[p1] = matrix[p2];
                 matrix[p2] = temp;
                 p1++;
@@ -289,13 +303,13 @@ namespace _2021_05
             }
 
             //对角线交换 永远考虑列》行的
-            for (int i = 0; i < len-1; i++)
+            for (int i = 0; i < len - 1; i++)
             {
                 for (int j = 1; j < len; j++)
                 {
                     if (i < j)
                     {
-                        var temp = matrix[i][j];
+                        int temp = matrix[i][j];
                         matrix[i][j] = matrix[j][i];
                         matrix[j][i] = temp;
                     }
@@ -304,5 +318,5 @@ namespace _2021_05
         }
     }
 }
-  
+
 

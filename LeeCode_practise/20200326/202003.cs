@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 
 namespace _20200326
 {
     //public delegate Task RequestDelegate(Context context);
-     public delegate Task RequestDelegate(Context context);
+    public delegate Task RequestDelegate(Context context);
     //public delegate TResult Func<[Nullable(2)] in T, [Nullable(2)] out TResult>(T arg);
     public class Context
     {
@@ -74,8 +71,7 @@ namespace _20200326
 
         internal class ApplicationCore
         {
-
-            IList<Func<RequestDelegate, RequestDelegate>> list;
+            private readonly IList<Func<RequestDelegate, RequestDelegate>> list;
             public ApplicationCore()
             {
                 list = new List<Func<RequestDelegate, RequestDelegate>>();
@@ -91,13 +87,13 @@ namespace _20200326
                 Func<RequestDelegate, RequestDelegate> upParam = requestDelegate =>
                 {
                     //得到一个requestDelegate
-                   return context =>
-                    {
-                        //得到一个task
-                        Func<Task> task = () => requestDelegate(context);
-                        return  middware(context, task);
-                    };
-               };
+                    return context =>
+                     {
+                         //得到一个task
+                         Func<Task> task = () => requestDelegate(context);
+                         return middware(context, task);
+                     };
+                };
                 return Use(upParam);
             }
 
@@ -110,7 +106,7 @@ namespace _20200326
                     await Task.Run(() => Console.WriteLine("这是第一个中间件哦，内置的"));
                 };
 
-                foreach (var item in list.Reverse())
+                foreach (Func<RequestDelegate, RequestDelegate> item in list.Reverse())
                 {
                     defaultDelegate = item(defaultDelegate);
                 }
@@ -123,7 +119,7 @@ namespace _20200326
         #region 写个rx.net 的基本用法
         public static void rxMain()
         {
-            var sequence = GetTaskObservable();
+            IObservable<int> sequence = GetTaskObservable();
             sequence.Subscribe
             (
                 x => Console.WriteLine($"OnNext: {x}"),

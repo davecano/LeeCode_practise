@@ -2,9 +2,9 @@
 
 namespace _2020_01_06
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             _202001.Instance.DisPlayFuzzBizz();
             Console.ReadKey();

@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 
 namespace _2020_01_06
 {
-    public class _202001:Singleton<_202001>
+    public class _202001 : Singleton<_202001>
     {
         #region 按序打印
-        class Foo
+        private class Foo
         {
             /*
              * 第一种方式
@@ -81,15 +78,19 @@ namespace _2020_01_06
             //}
 
             #region 自己实现
-          
-                public volatile int i=0;
+
+            public volatile int i = 0;
             public Foo()
             {
 
             }
             public void First(Action printFirst)
             {
-                while(i!=0) continue;
+                while (i != 0)
+                {
+                    continue;
+                }
+
                 printFirst();
                 i++;
 
@@ -98,16 +99,24 @@ namespace _2020_01_06
             public void Second(Action printSecond)
             {
 
-                while (i != 1) continue;
+                while (i != 1)
+                {
+                    continue;
+                }
+
                 printSecond();
                 i++;
             }
 
             public void Third(Action printThird)
             {
-               while(i!=2) continue; 
+                while (i != 2)
+                {
+                    continue;
+                }
+
                 printThird();
-                i=0;
+                i = 0;
             }
 
 
@@ -189,11 +198,11 @@ namespace _2020_01_06
         //自旋锁也可实现，
         internal class FooBar
         {
-            private int n;
+            private readonly int n;
             //第一个参数初始信号量，第二个参数最大信号量（最多允许N个线程同时使用）
             //交替打印按顺序打印，所以最大信号量是1
-            private Semaphore foo = new Semaphore(1, 1);//先打印foo，所以加入一个初始信号量
-            private Semaphore bar = new Semaphore(0, 1);//后打印，所以不加入信号量，等待foo打印后在加入信号量
+            private readonly Semaphore foo = new Semaphore(1, 1);//先打印foo，所以加入一个初始信号量
+            private readonly Semaphore bar = new Semaphore(0, 1);//后打印，所以不加入信号量，等待foo打印后在加入信号量
             public FooBar(int n)
             {
                 this.n = n;
@@ -226,7 +235,7 @@ namespace _2020_01_06
 
         public void Display()
         {
-            FooBar foo=new FooBar(4);
+            FooBar foo = new FooBar(4);
             Task.Run(() =>
             {
                 foo.Bar(() => Console.Write("bar"));
@@ -253,7 +262,7 @@ namespace _2020_01_06
 
         //    // printNumber(x) outputs "x", where x is an integer.
         //    private SpinWait spinWait = new SpinWait();
-       
+
         //    private int _continueCondition=0;
         //    private volatile int index;
         //    public void Zero(Action<int> printNumber)
@@ -279,7 +288,7 @@ namespace _2020_01_06
         //                Thread.VolatileWrite(ref _continueCondition, 1);
         //            }
         //        }
-         
+
         //    }
 
         //    public void Even(Action<int> printNumber)
@@ -291,9 +300,9 @@ namespace _2020_01_06
         //            printNumber(++index);
         //            if (index == n) return;
         //            Thread.VolatileWrite(ref _continueCondition, 0);
-                   
+
         //        }
- 
+
         //    }
 
         //    public void Odd(Action<int> printNumber)
@@ -308,18 +317,18 @@ namespace _2020_01_06
         //            printNumber(++index);
         //            if (index == n) return;
         //            Thread.VolatileWrite(ref _continueCondition, 0);
-                    
+
         //        }
-             
+
         //    }
         //}
 
         internal class ZeroEvenOdd
         {
-            private int n;
-            private Semaphore zero = new Semaphore(1, 1);
-            private Semaphore even = new Semaphore(0, 1);
-            private Semaphore odd = new Semaphore(0, 1);
+            private readonly int n;
+            private readonly Semaphore zero = new Semaphore(1, 1);
+            private readonly Semaphore even = new Semaphore(0, 1);
+            private readonly Semaphore odd = new Semaphore(0, 1);
             private bool flag = false;
             public ZeroEvenOdd(int n)
             {
@@ -330,7 +339,7 @@ namespace _2020_01_06
             // printNumber(x) outputs "x", where x is an integer.
             public void Zero(Action<int> printNumber)
             {
-                for (var i = 0; i < n; i++)
+                for (int i = 0; i < n; i++)
                 {
                     zero.WaitOne();
                     flag = false;
@@ -342,7 +351,7 @@ namespace _2020_01_06
             //输出偶数
             public void Even(Action<int> printNumber)
             {
-                for (var i = 1; i <= n; i++)
+                for (int i = 1; i <= n; i++)
                 {
                     even.WaitOne();
                     if (i % 2 == 0)
@@ -363,7 +372,7 @@ namespace _2020_01_06
             //输出奇数
             public void Odd(Action<int> printNumber)
             {
-                for (var i = 1; i <= n; i++)
+                for (int i = 1; i <= n; i++)
                 {
                     odd.WaitOne();
                     if (i % 2 != 0)
@@ -385,7 +394,7 @@ namespace _2020_01_06
 
         public void DisplayZeroEvenOdd()
         {
-            var a = new ZeroEvenOdd(10);
+            ZeroEvenOdd a = new ZeroEvenOdd(10);
             Task.Run(() => a.Zero(p => Console.WriteLine(p.ToString())));
             Task.Run(() => a.Even(p => Console.WriteLine(p.ToString())));
             Task.Run(() => a.Odd(p => Console.WriteLine(p.ToString())));
@@ -408,8 +417,8 @@ namespace _2020_01_06
         }
         public class H2O
         {
-            private Semaphore hSemaphore=new Semaphore(2,2);
-            private Semaphore oSemaphore = new Semaphore(0, 1);
+            private readonly Semaphore hSemaphore = new Semaphore(2, 2);
+            private readonly Semaphore oSemaphore = new Semaphore(0, 1);
             private int hcount = 0;
             public H2O()
             {
@@ -422,12 +431,13 @@ namespace _2020_01_06
                 hSemaphore.WaitOne();
                 releaseHydrogen();
                 Interlocked.Increment(ref hcount);
-                if (hcount % 2 == 0) 
+                if (hcount % 2 == 0)
+                {
                     oSemaphore.Release(1);
-
+                }
             }
 
-           
+
 
             public void Oxygen(Action releaseOxygen)
             {
@@ -447,8 +457,8 @@ namespace _2020_01_06
 
         public class FizzBuzz
         {
-            private int n;
-            private Semaphore semaphore;
+            private readonly int n;
+            private readonly Semaphore semaphore;
             private int curNum;
             public FizzBuzz(int n)
             {
@@ -460,7 +470,7 @@ namespace _2020_01_06
             // printFizz() outputs "fizz".
             public void Fizz(Action printFizz)
             {
-                while (curNum<=n)
+                while (curNum <= n)
                 {
                     try
                     {
@@ -476,7 +486,7 @@ namespace _2020_01_06
                         semaphore.Release();
                     }
                 }
-              
+
             }
 
             // printBuzzz() outputs "buzz".
@@ -488,7 +498,7 @@ namespace _2020_01_06
                     try
                     {
                         semaphore.WaitOne();
-                      
+
                         if (curNum % 5 == 0 && curNum % 3 != 0 && curNum <= n)
                         {
                             printBuzz();
@@ -500,19 +510,19 @@ namespace _2020_01_06
                         semaphore.Release();
                     }
                 }
-                  
+
             }
 
             // printFizzBuzz() outputs "fizzbuzz".
             public void Fizzbuzz(Action printFizzBuzz)
             {
-                while (curNum<=n)
+                while (curNum <= n)
                 {
                     try
                     {
                         semaphore.WaitOne();
-                      
-                        if (curNum % 3 == 0 && curNum % 5 == 0&& curNum <= n)
+
+                        if (curNum % 3 == 0 && curNum % 5 == 0 && curNum <= n)
                         {
                             printFizzBuzz();
                             curNum++;
@@ -523,20 +533,20 @@ namespace _2020_01_06
                         semaphore.Release();
                     }
                 }
-             
+
             }
 
             // printNumber(x) outputs "x", where x is an integer.
             public void Number(Action<int> printNumber)
             {
 
-                while (curNum<=n)
+                while (curNum <= n)
                 {
                     try
                     {
                         semaphore.WaitOne();
-                        
-                        if (curNum % 3 != 0 && curNum % 5 != 0&& curNum <= n)
+
+                        if (curNum % 3 != 0 && curNum % 5 != 0 && curNum <= n)
                         {
                             printNumber(curNum);
                             curNum++;
@@ -547,72 +557,72 @@ namespace _2020_01_06
                         semaphore.Release();
                     }
                 }
-            
-            }
 
             }
-            //public class FizzBuzz
-            //{
-            //    private int n;
-            //    private SemaphoreSlim semaSlim;
-            //    private int startNum;
 
-            //    public FizzBuzz(int n)
-            //    {
-            //        this.n = n;
-            //        startNum = 1;
-            //        semaSlim = new SemaphoreSlim(1);
-            //    }
+        }
+        //public class FizzBuzz
+        //{
+        //    private int n;
+        //    private SemaphoreSlim semaSlim;
+        //    private int startNum;
 
-            //    private void CommonPrint(Func<int, bool> canChange, Action ac)
-            //    {
-            //        while (startNum <= n)
-            //        {
-            //            semaSlim.Wait();
+        //    public FizzBuzz(int n)
+        //    {
+        //        this.n = n;
+        //        startNum = 1;
+        //        semaSlim = new SemaphoreSlim(1);
+        //    }
 
-            //            if (startNum <= n && canChange(startNum))
-            //            {
-            //                ac();
-            //                startNum++;
-            //            }
+        //    private void CommonPrint(Func<int, bool> canChange, Action ac)
+        //    {
+        //        while (startNum <= n)
+        //        {
+        //            semaSlim.Wait();
 
-            //            semaSlim.Release();
-            //        }
-            //    }
+        //            if (startNum <= n && canChange(startNum))
+        //            {
+        //                ac();
+        //                startNum++;
+        //            }
 
-            //    // printFizz() outputs "fizz".
-            //    public void Fizz(Action printFizz) => CommonPrint((num) => num % 3 == 0 && num % 5 != 0, printFizz);
+        //            semaSlim.Release();
+        //        }
+        //    }
 
-            //    // printBuzzz() outputs "buzz".
-            //    public void Buzz(Action printBuzz) => CommonPrint((num) => num % 5 == 0 && num % 3 != 0, printBuzz);
+        //    // printFizz() outputs "fizz".
+        //    public void Fizz(Action printFizz) => CommonPrint((num) => num % 3 == 0 && num % 5 != 0, printFizz);
 
-            //    // printFizzBuzz() outputs "fizzbuzz".
-            //    public void Fizzbuzz(Action printFizzBuzz) => CommonPrint((num) => num % 5 == 0 && num % 3 == 0, printFizzBuzz);
+        //    // printBuzzz() outputs "buzz".
+        //    public void Buzz(Action printBuzz) => CommonPrint((num) => num % 5 == 0 && num % 3 != 0, printBuzz);
 
-            //    // printNumber(x) outputs "x", where x is an integer.
-            //    public void Number(Action<int> printNumber)
-            //    {
-            //        while (startNum <= n)
-            //        {
-            //            semaSlim.Wait();
+        //    // printFizzBuzz() outputs "fizzbuzz".
+        //    public void Fizzbuzz(Action printFizzBuzz) => CommonPrint((num) => num % 5 == 0 && num % 3 == 0, printFizzBuzz);
 
-            //            if (startNum <= n && startNum % 5 != 0 && startNum % 3 != 0)
-            //                printNumber(startNum++);
+        //    // printNumber(x) outputs "x", where x is an integer.
+        //    public void Number(Action<int> printNumber)
+        //    {
+        //        while (startNum <= n)
+        //        {
+        //            semaSlim.Wait();
 
-            //            semaSlim.Release();
-            //        }
-            //    }
-            //}
+        //            if (startNum <= n && startNum % 5 != 0 && startNum % 3 != 0)
+        //                printNumber(startNum++);
 
-            public void DisPlayFuzzBizz()
+        //            semaSlim.Release();
+        //        }
+        //    }
+        //}
+
+        public void DisPlayFuzzBizz()
         {
-            var fz=new FizzBuzz(15);
+            FizzBuzz fz = new FizzBuzz(15);
             //for (int i = 0; i < 15; i++)
             //{
-                Task.Run(() => fz.Fizz(() => Console.WriteLine("Fizz")));
-                Task.Run(() => fz.Buzz(() => Console.WriteLine("Buzz")));
-                Task.Run(() => fz.Fizzbuzz(() => Console.WriteLine("Fizzbuzz")));
-                Task.Run(() => fz.Number(p => Console.WriteLine(p)));
+            Task.Run(() => fz.Fizz(() => Console.WriteLine("Fizz")));
+            Task.Run(() => fz.Buzz(() => Console.WriteLine("Buzz")));
+            Task.Run(() => fz.Fizzbuzz(() => Console.WriteLine("Fizzbuzz")));
+            Task.Run(() => fz.Number(p => Console.WriteLine(p)));
             //}
         }
         #endregion

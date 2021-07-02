@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using Utils;
 
@@ -86,7 +84,10 @@ namespace _2020_01_05
                 l2 = l2.next;
 
             }
-            else return null;
+            else
+            {
+                return null;
+            }
 
             ListNode res = l;
             while (l1 != null || l2 != null)
@@ -96,8 +97,16 @@ namespace _2020_01_05
                 //个位数
                 l.next = new ListNode(sum % 10);
                 isAddOne = (sum / 10) == 1;
-                if (l1 != null) l1 = l1.next;
-                if (l2 != null) l2 = l2.next;
+                if (l1 != null)
+                {
+                    l1 = l1.next;
+                }
+
+                if (l2 != null)
+                {
+                    l2 = l2.next;
+                }
+
                 l = l.next;
             }
 
@@ -255,19 +264,23 @@ namespace _2020_01_05
 
             int setY(int i)
             {
-                var (m, n) = cMath(i);
+                (int m, int n) = cMath(i);
                 return n < numRows ? m * (numRows - 1) : m * (numRows - 1) + n - numRows + 1;
 
             }
 
             #endregion
 
-            if (numRows == 1) return s;
+            if (numRows == 1)
+            {
+                return s;
+            }
+
             int p = setY(s.Length) + 1;
             char[,] arr = new char[numRows, p];
             int[] tempX = setTemp();
             int x, y;
-            for (var i = 0; i < s.Length; i++)
+            for (int i = 0; i < s.Length; i++)
             {
                 x = setX(tempX, i);
                 y = setY(i);
@@ -281,7 +294,10 @@ namespace _2020_01_05
             {
                 for (int b = 0; b < p; b++)
                 {
-                    if (arr[a, b] != '\0') reChars[cindex++] = arr[a, b];
+                    if (arr[a, b] != '\0')
+                    {
+                        reChars[cindex++] = arr[a, b];
+                    }
                 }
             }
 
@@ -289,8 +305,10 @@ namespace _2020_01_05
         }
         public string Convert2(string s, int numRows)
         {
-            if (numRows == 1) return s;
-
+            if (numRows == 1)
+            {
+                return s;
+            }
 
             List<List<char>> rows = new List<List<char>>();
             for (int i = 0; i < s.Length && i < numRows; i++)
@@ -299,7 +317,7 @@ namespace _2020_01_05
             }
             bool isdown = false;
             int row = 0;
-            foreach (var c in s)
+            foreach (char c in s)
             {
                 rows[row].Add(c);
                 if (row == 0 || row == numRows - 1)
@@ -310,7 +328,7 @@ namespace _2020_01_05
             }
 
             StringBuilder sb = new StringBuilder();
-            foreach (var l in rows)
+            foreach (List<char> l in rows)
             {
                 sb.Append(new string(l.ToArray()));
             }
@@ -325,8 +343,10 @@ namespace _2020_01_05
         /// <returns></returns>
         public string Convert3(string s, int numRows)
         {
-            if (numRows == 1) return s;
-
+            if (numRows == 1)
+            {
+                return s;
+            }
 
             List<List<char>> rows = new List<List<char>>();
             for (int i = 0; i < s.Length && i < numRows; i++)
@@ -335,7 +355,7 @@ namespace _2020_01_05
             }
             bool isdown = false;
             int row = 0;
-            foreach (var c in s)
+            foreach (char c in s)
             {
                 rows[row].Add(c);
                 if (row == 0 || row == numRows - 1)
@@ -346,7 +366,7 @@ namespace _2020_01_05
             }
 
             StringBuilder sb = new StringBuilder();
-            foreach (var l in rows)
+            foreach (List<char> l in rows)
             {
                 sb.Append(new string(l.ToArray()));
             }
@@ -362,42 +382,71 @@ namespace _2020_01_05
         #region 8. 字符串转换整数 (atoi) https://leetcode-cn.com/problems/string-to-integer-atoi/
         public int MyAtoi(string str) //还有点问题
         {
-            if (string.IsNullOrWhiteSpace(str)) return 0;
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return 0;
+            }
+
             int i;
-            int x=1;
+            int x = 1;
             for (i = 0; i < str.Length; i++)
             {
-               if(' '.Equals(str[i])) continue;
-               if ('-'.Equals(str[i]) || '+'.Equals(str[i]))
-               {
-                   i++;
-                   x = '+'.Equals(str[i]) ? 1 : -1; 
-                   if (i.Equals(str.Length)) return 0;
-                   break;
-               }
-               if (char.IsNumber(str[i])) break;
-               return 0;
+                if (' '.Equals(str[i]))
+                {
+                    continue;
+                }
+
+                if ('-'.Equals(str[i]) || '+'.Equals(str[i]))
+                {
+                    i++;
+                    x = '+'.Equals(str[i]) ? 1 : -1;
+                    if (i.Equals(str.Length))
+                    {
+                        return 0;
+                    }
+
+                    break;
+                }
+                if (char.IsNumber(str[i]))
+                {
+                    break;
+                }
+
+                return 0;
             }
-            char[] res=new char[10];
+            char[] res = new char[10];
             int index = 0;
             int j = i;
             for (; j < str.Length; j++)
             {
-                if (!char.IsNumber(str[i])&&j==i) return 0;
-                if (char.IsNumber(str[i])) res[index++] =str[i];
-                else break;
+                if (!char.IsNumber(str[i]) && j == i)
+                {
+                    return 0;
+                }
 
+                if (char.IsNumber(str[i]))
+                {
+                    res[index++] = str[i];
+                }
+                else
+                {
+                    break;
+                }
             }
 
             string t = new string(res);
-            if (int.TryParse(t,out var resint))
+            if (int.TryParse(t, out int resint))
             {
-                return resint*x;
+                return resint * x;
             }
 
-            if (x == 1) return int.MaxValue;
-             return int.MinValue;
-           
+            if (x == 1)
+            {
+                return int.MaxValue;
+            }
+
+            return int.MinValue;
+
         }
         #endregion
 
@@ -405,11 +454,11 @@ namespace _2020_01_05
         public int Reverse(int x)
         {
             int p = x > 0 ? 1 : -1;
-            x = x*p;
+            x = x * p;
             string s = new string(x.ToString().Reverse().ToArray());
-            if (int.TryParse(s, out var tResult))
+            if (int.TryParse(s, out int tResult))
             {
-                return tResult*p;
+                return tResult * p;
             }
 
             return 0;
@@ -422,9 +471,15 @@ namespace _2020_01_05
             {
                 int pop = x % 10;
                 if (ans > int.MaxValue / 10 || (ans == int.MaxValue / 10 && pop > 7))
+                {
                     return 0;
+                }
+
                 if (ans < int.MinValue / 10 || (ans == int.MinValue / 10 && pop < -8))
+                {
                     return 0;
+                }
+
                 ans = ans * 10 + pop;
                 x /= 10;
             }
