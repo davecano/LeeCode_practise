@@ -196,7 +196,11 @@ namespace _2021_05
             }
             t = '0';
         }
-
+        /// <summary>
+        /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xn4n7c/
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public int RomanToIntN(string s)
         {
             int res=0;
