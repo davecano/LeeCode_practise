@@ -150,41 +150,42 @@ namespace _2021_05
         public IList<IList<int>> LevelOrder(TreeNode root)
         {
             //BFS
-            //var resList = new List<IList<int>>();
-            //if (root == null) return resList;
-            //var quene = new Queue<TreeNode>();
-            //quene.Enqueue(root);
-            //while (quene.Count > 0)
-            //{
-            //    var list = new List<TreeNode>();
-            //    var storage = new List<int>();
-            //    while (quene.Count > 0)
-            //    {
-            //        list.Add(quene.Dequeue());
-            //    }
-            //    foreach (var node in list)
-            //    {
-            //        if (node != null)
-            //        {
-            //            storage.Add(node.val);
-            //            quene.Enqueue(node.left);
-            //            quene.Enqueue(node.right);
-            //        }
-
-            //    }
-            //    if (storage.Count > 0)
-            //        resList.Add(storage);
-            //}
-            //return resList;
-            //DFS
-            List<IList<int>> resList = new List<IList<int>>();
-            if (root == null)
+            var resList = new List<IList<int>>();
+            if (root == null) return resList;
+            var quene = new Queue<TreeNode>();
+            quene.Enqueue(root);
+            while (quene.Count > 0)
             {
-                return resList;
-            }
+                var list = new List<TreeNode>();
+                var storage = new List<int>();
+                while (quene.Count > 0)
+                {
+                    list.Add(quene.Dequeue());
+                }
+                foreach (var node in list)
+                {
+                    if (node != null)
+                    {
+                        storage.Add(node.val);
+                        quene.Enqueue(node.left);
+                        quene.Enqueue(node.right);
+                    }
 
-            LevelOrderHelper(ref resList, root, 0);
+                }
+                if (storage.Count > 0)
+                    resList.Add(storage);
+            }
             return resList;
+
+            //DFS
+            //List<IList<int>> resList = new List<IList<int>>();
+            //if (root == null)
+            //{
+            //    return resList;
+            //}
+
+            //LevelOrderHelper(ref resList, root, 0);
+            //return resList;
         }
 
         private void LevelOrderHelper(ref List<IList<int>> resList, TreeNode root, int v)
@@ -236,6 +237,46 @@ namespace _2021_05
     #region 排序和搜索
     public class _20210525 : Singleton<_20210525>
     {
+
+        /// <summary>
+        ///  归并排序 确定算法 是一种外排序 二分 然后比较
+        /// </summary>
+        /// <param name="nums"></param>
+        public void MergeSort(int[] nums) {
+            int[] temp = new int[nums.Length];
+            MergeSortHelper(nums, 0, nums.Length - 1, temp);
+        }
+
+        private void MergeSortHelper(int[] nums, int left, int right, int[] temp)
+        {
+            if (left < right) {
+                int mid = left + ((right - left) / 2);
+                MergeSortHelper(nums, left, mid, temp);
+                MergeSortHelper(nums, mid+1, right, temp);
+                StartMerge(nums,left,mid,right,temp);
+            }
+        }
+
+        private void StartMerge(int[] nums, int left, int mid, int right, int[] temp)
+        {
+            int p = left, q = mid+1;
+            int index = left;
+            while (p <= left && q < right) {
+                temp[index++] = nums[p] < nums[q] ? nums[p++] : nums[q++];
+            }
+            while (p <= left) {
+                temp[index++] = nums[p++];
+            }
+            while (q<=right)
+            {
+                temp[index++] = nums[q++];
+            }
+            for (int i = left; i < right+1; i++)
+            {
+                nums[i] = temp[i];
+            }
+        }
+
         /// <summary>
         /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnumcr/
         /// </summary>

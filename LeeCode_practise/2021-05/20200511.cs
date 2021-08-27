@@ -286,28 +286,41 @@ namespace _2021_05
         public string LongestCommonPrefix(string[] strs)
         {
 
-            List<char> resList = new List<char>();
-            int i = 0;
-            for (; i < strs.Select(x => x.Length).Min(); i++)
+            //List<char> resList = new List<char>();
+            //int i = 0;
+            //for (; i < strs.Select(x => x.Length).Min(); i++)
+            //{
+            //    int index = 0;
+            //    bool predicate = true;
+            //    for (int j = 0; j < strs.Length - 1; j++)
+            //    {
+            //        if (strs[j][i] != strs[++index][i])
+            //        {
+            //            predicate = false;
+            //            break;
+            //        }
+            //    }
+
+            //    if (!predicate)
+            //    {
+            //        break;
+            //    }
+            //}
+
+            //return strs[0].Substring(0, i);
+
+            string pre = strs[0];
+            foreach (var str in strs)
             {
-                int index = 0;
-                bool predicate = true;
-                for (int j = 0; j < strs.Length - 1; j++)
+                while (pre.Length > 0)
                 {
-                    if (strs[j][i] != strs[++index][i])
-                    {
-                        predicate = false;
-                        break;
-                    }
+                    if (str.IndexOf(pre)!=0)
+                        pre = pre.Substring(0, pre.Length - 1);
+                    else break;
                 }
-
-                if (!predicate)
-                {
-                    break;
-                }
+            
             }
-
-            return strs[0].Substring(0, i);
+            return pre;
         }
     }
 }

@@ -13,7 +13,8 @@ namespace _2021_05
             //_20210525.Instance.Merge(new int[] { 2, 0 }, 1, new int[] { 1 }, 1);
             //_20210526.Instance.Rob(new int[] { 1, 3, 1, 3, 100 });
             //_20210701.Instance.RomanToIntN("MDCCCLXXXIV");
-            _20210707.Instance.Generate(5);
+           // _20210707.Instance.Generate(5);
+            Console.WriteLine(double.Parse("1.000000") ==double.Parse("1"));
             Console.Read();
             //Console.WriteLine(3^4^3);
             //Console.WriteLine(3 ^ 0);

@@ -17,7 +17,7 @@ namespace _2020_01_05
             //}
 
             //Console.WriteLine(sb.ToString());
-            _202005.Display();
+            _202001.Instance.FindMedianSortedArrays(new int[]{ 1,2},new int[]{ 3,4});
             Console.ReadKey();
         }
     }

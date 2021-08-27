@@ -76,18 +76,26 @@ namespace _2021_05
             //}
             //p2.next = null;
             //return resNode;
+            //ListNode res = new ListNode(0);
+            //ListNode rHead = res;
+            //while (head != null)
+            //{
+            //    ListNode temp = head.next;
+            //    head.next = rHead.next;
+            //    rHead.next = head;
+            //    head = temp;
+            //}
+            //return res.next;
+
             ListNode res = new ListNode(0);
-            ListNode rHead = res;
-            while (head != null)
+            while (head!=null)
             {
-                ListNode temp = head.next;
-                head.next = rHead.next;
-                rHead.next = head;
-                head = temp;
+                var nextnode = head.next;
+                head.next = res.next;
+                res.next = head;
+                head = nextnode;
             }
             return res.next;
-
-
         }
         /// <summary>
         /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/xnnbp2/

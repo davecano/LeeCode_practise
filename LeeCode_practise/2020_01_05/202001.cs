@@ -213,7 +213,67 @@ namespace _2020_01_05
         //}
         #endregion
         #region 4. 寻找两个有序数组的中位数 https://leetcode-cn.com/problems/median-of-two-sorted-arrays/
+        public double FindMedianSortedArrays(int[] nums1, int[] nums2)
+        {
+            int p1 = 0;
+            int p2 = 0;
+            double res = 0;
+            int count = 0;
+            while (p1 < nums1.Length || p2 < nums2.Length)
+            {
+                int curval = 0;
+                if (p1 < nums1.Length && p2 < nums2.Length)
+                {
+                    if (nums1[p1] < nums2[p2])
+                    {
+                        curval = nums1[p1];
+                        p1++;
+                    }
+                    else
+                    {
+                        curval = nums2[p2];
+                        p2++;
+                    }
+                }
 
+                else if (p1 < nums1.Length)
+                {
+                    curval = nums1[p1];
+                    p1++;
+                }
+                else if (p2 < nums2.Length)
+                {
+                    curval = nums2[p2];
+                    p2++;
+                }
+
+                //even
+                if ((nums1.Length + nums2.Length) % 2 == 0)
+                {
+                    if (count == (nums1.Length + nums2.Length) / 2 - 1)
+                        res = curval;
+                    else if (count == (nums1.Length + nums2.Length) / 2)
+                    {
+                        res += (curval - res) / 2;
+                        return res;
+                    }
+
+                }
+                else
+                {
+                    if (count == (nums1.Length + nums2.Length) / 2)
+                    {
+                        res = curval;
+                        return res;
+                    }
+
+
+                }
+
+                count++;
+            }
+            return res;
+        }
 
 
         #endregion
@@ -221,7 +281,43 @@ namespace _2020_01_05
 
         public string LongestPalindrome(string s)
         {
-            return null;
+            if (s.Length == 0) return string.Empty;
+            var res = s[0].ToString();
+            for (int i = 1; i < s.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (s[i] == s[j])
+                    {
+                        int count = i - j + 1;
+                        if (res.Length < count)
+                        {
+                            var subString = s.Substring(j, count);
+                            if (IsPalindrome(subString))
+                            {
+                                res = subString;
+                            }
+                        }
+
+                    }
+
+                }
+            }
+            return res;
+        }
+        public bool IsPalindrome(string s)
+        {
+            int left = 0;
+            int right = s.Length - 1;
+            bool res = true;
+            while (left < right)
+            {
+                if (s[left++] != s[right--])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         #endregion
@@ -240,68 +336,89 @@ namespace _2020_01_05
 
         public string Convert(string s, int numRows)
         {
-            #region 本地方法
-            (int m, int n) cMath(int i)
+            //#region 本地方法
+            //(int m, int n) cMath(int i)
+            //{
+            //    return (i / (2 * (numRows - 1)), i % (2 * (numRows - 1)));
+            //}
+
+            //int[] setTemp()
+            //{
+            //    int[] tempx = new int[2 * (numRows - 1)];
+            //    int index = 0;
+            //    for (int j = 0; j < tempx.Length; j++)
+            //    {
+            //        tempx[j] = j < numRows - 1 ? index++ : index--;
+            //    }
+
+            //    return tempx;
+            //}
+            //int setX(int[] tempx, int i)
+            //{
+            //    return tempx[i % (2 * (numRows - 1))];
+            //}
+
+            //int setY(int i)
+            //{
+            //    (int m, int n) = cMath(i);
+            //    return n < numRows ? m * (numRows - 1) : m * (numRows - 1) + n - numRows + 1;
+
+            //}
+
+            //#endregion
+
+            //if (numRows == 1)
+            //{
+            //    return s;
+            //}
+
+            //int p = setY(s.Length) + 1;
+            //char[,] arr = new char[numRows, p];
+            //int[] tempX = setTemp();
+            //int x, y;
+            //for (int i = 0; i < s.Length; i++)
+            //{
+            //    x = setX(tempX, i);
+            //    y = setY(i);
+            //    arr[x, y] = s[i];
+
+            //}
+
+            //char[] reChars = new char[s.Length];
+            //int cindex = 0;
+            //for (int a = 0; a < numRows; a++)
+            //{
+            //    for (int b = 0; b < p; b++)
+            //    {
+            //        if (arr[a, b] != '\0')
+            //        {
+            //            reChars[cindex++] = arr[a, b];
+            //        }
+            //    }
+            //}
+
+            //return new string(reChars);
+
+            bool gointDown = false; ;
+            List<StringBuilder> list = new List<StringBuilder>();
+            for (int i = 0; i < Math.Min(numRows, s.Length); i++)
             {
-                return (i / (2 * (numRows - 1)), i % (2 * (numRows - 1)));
+                list.Add(new StringBuilder());
             }
-
-            int[] setTemp()
+            int curRow = 0;
+            foreach (var ch in s)
             {
-                int[] tempx = new int[2 * (numRows - 1)];
-                int index = 0;
-                for (int j = 0; j < tempx.Length; j++)
-                {
-                    tempx[j] = j < numRows - 1 ? index++ : index--;
-                }
-
-                return tempx;
+                list[curRow].Append(ch);
+                if (curRow == 0 || curRow == numRows - 1) gointDown = !gointDown;
+                curRow += gointDown ? 1 : -1;
             }
-            int setX(int[] tempx, int i)
+            var res = new StringBuilder();
+            foreach (var sb in list)
             {
-                return tempx[i % (2 * (numRows - 1))];
-            }
-
-            int setY(int i)
-            {
-                (int m, int n) = cMath(i);
-                return n < numRows ? m * (numRows - 1) : m * (numRows - 1) + n - numRows + 1;
+                res.Append(sb);
 
             }
-
-            #endregion
-
-            if (numRows == 1)
-            {
-                return s;
-            }
-
-            int p = setY(s.Length) + 1;
-            char[,] arr = new char[numRows, p];
-            int[] tempX = setTemp();
-            int x, y;
-            for (int i = 0; i < s.Length; i++)
-            {
-                x = setX(tempX, i);
-                y = setY(i);
-                arr[x, y] = s[i];
-
-            }
-
-            char[] reChars = new char[s.Length];
-            int cindex = 0;
-            for (int a = 0; a < numRows; a++)
-            {
-                for (int b = 0; b < p; b++)
-                {
-                    if (arr[a, b] != '\0')
-                    {
-                        reChars[cindex++] = arr[a, b];
-                    }
-                }
-            }
-
-            return new string(reChars);
+            return res.ToString();
         }
         public string Convert2(string s, int numRows)
         {
@@ -487,5 +604,129 @@ namespace _2020_01_05
         }
 
         #endregion
+        /// <summary>
+        /// https://leetcode-cn.com/problems/container-with-most-water/
+        /// </summary>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public int MaxArea(int[] height)
+        {
+            //int max = 0;
+
+            //for (int i = 1; i < height.Length; i++)
+            //{
+            //    for (int j = 0; j < i; j++)
+            //    {
+            //        max = Math.Max((i - j) * Math.Min(height[i], height[j]), max);
+            //    }
+            //}
+            //return max;
+
+            int left = 0;
+            int right = height.Length - 1;
+            int res = (right - left) * Math.Min(height[left], height[right]);
+            while (left < right)
+            {
+                if (height[left] < height[right])
+                {
+                    left++;
+
+                }
+                else
+                {
+                    right--;
+                }
+                res = Math.Max(res, (right - left) * Math.Min(height[left], height[right]));
+            }
+            return res;
+        }
+        /// <summary>
+        /// https://leetcode-cn.com/problems/integer-to-roman/
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        readonly (int n, string c)[] valueSymbols = {
+        (1000, "M"),
+        (900, "CM"),
+        (500, "D"),
+        (400, "CD"),
+        (100, "C"),
+        (90, "XC"),
+        (50, "L"),
+        (40, "XL"),
+        (10, "X"),
+        (9, "IX"),
+        (5, "V"),
+        (4, "IV"),
+        (1, "I")
+    };
+
+        public string IntToRoman(int num)
+        {
+            StringBuilder roman = new StringBuilder();
+            foreach (var tuple in valueSymbols)
+            {
+                int value = tuple.n;
+                string symbol = tuple.c;
+                while (num >= value)
+                {
+                    num -= value;
+                    roman.Append(symbol);
+                }
+                if (num == 0)
+                {
+                    break;
+                }
+            }
+            return roman.ToString();
+        }
+
+        Dictionary<char, int> symbolValues = new Dictionary<char, int> {
+        {'I', 1},
+        {'V', 5},
+        {'X', 10},
+        {'L', 50},
+        {'C', 100},
+        {'D', 500},
+        {'M', 1000},
+    };
+
+        public int RomanToInt(string s)
+        {
+            int ans = 0;
+            int n = s.Length;
+            for (int i = 0; i < n; ++i)
+            {
+                int value = symbolValues[s[i]];
+                if (i < n - 1 && value < symbolValues[s[i + 1]])
+                {
+                    ans -= value;
+                }
+                else
+                {
+                    ans += value;
+                }
+            }
+            return ans;
+        }
+        /// <summary>
+        /// https://leetcode-cn.com/problems/3sum/
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        //public IList<IList<int>> ThreeSum(int[] nums)
+        //{
+        //    if (nums.Length < 3) return null;
+
+        //}
+        //public int ThreeSumClosest(int[] nums, int target)
+        //{
+
+        //}
+
     }
+
+
 }
+
+

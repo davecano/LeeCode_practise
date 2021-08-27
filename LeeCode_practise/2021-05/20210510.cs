@@ -74,10 +74,22 @@ namespace _2021_05
         /// <param name="k"></param>
         public void Rotate(int[] nums, int k)
         {
-            if (nums == null || nums.Length == 0 || k < 0)
+            if (nums == null || nums.Length == 0 || k < 0) return;
+            if (nums == null || nums.Length == 0 || k < 0) return;
+            k = k % nums.Length;
+            int[] temp = new int[nums.Length];
+            for (int i = 0; i < nums.Length; i++)
             {
-                return;
+                temp[i] = nums[i];
             }
+            for (int i = 0; i < nums.Length; i++)
+            {
+                nums[(i + k) % nums.Length] = temp[i];
+            }
+            //if (nums == null || nums.Length == 0 || k < 0)
+            //{
+            //    return;
+            //}
 
             //int[] temp = new int[nums.Length];
             //for (int i = 0; i < nums.Length; i++)
@@ -91,6 +103,28 @@ namespace _2021_05
             //找到移动后末尾的数字
             //int temp = nums[nums.Length - k - 1];
             //nums[nums.Length - k - 1]=
+        }
+
+        public void Rotatenew(int[] nums, int k)
+        {
+            if (k >= nums.Length)
+                Rotate(nums, k % nums.Length);
+            else
+            {
+                int[] temp = new int[nums.Length];
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    temp[i] = nums[i];
+                }
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    nums[i] = temp[getNewIndex(nums.Length, k, i)];
+                }
+            }
+        }
+        public int getNewIndex(int length, int k, int index)
+        {
+            return (index + k) % length;
         }
         /// <summary>
         /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/x248f5/
@@ -119,6 +153,24 @@ namespace _2021_05
                 reduce ^= num;
             }
             return reduce;
+        }
+
+        public (int a, int b) TwoDifferentNumber(int[] nums) {
+            int eor = 0;
+            foreach (int num in nums)
+            {
+                eor ^= num;
+            }
+            //异或出的结果为 a^b !=0 以为a！=b
+            int temp = eor & (~eor + 1);
+            int seor = 0;
+            foreach (int num in nums)
+            {
+                if ((num & temp) == 0) {
+                    seor ^= num;
+                }
+            }
+            return (seor, eor ^ seor);
         }
         /// <summary>
         /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/x2y0c2/
@@ -225,28 +277,40 @@ namespace _2021_05
             //        index++;
             //    }
             //}
-            int index = 0;
+            //int index = 0;
+            ////for (int i = 0; i < nums.Length; i++)
+            ////{
+            ////    if (nums[i] != 0)
+            ////        nums[index++] = nums[i];
+
+            ////}
+            ////for (int i = index; i < nums.Length; i++)
+            ////{
+            ////    nums[i] = 0;
+            ////}
             //for (int i = 0; i < nums.Length; i++)
             //{
             //    if (nums[i] != 0)
-            //        nums[index++] = nums[i];
-
+            //    {
+            //        int temp = nums[index];
+            //        nums[index] = nums[i];
+            //        nums[i] = temp;
+            //        index++;
+            //    }
             //}
-            //for (int i = index; i < nums.Length; i++)
-            //{
-            //    nums[i] = 0;
-            //}
-            for (int i = 0; i < nums.Length; i++)
+            int left = 0;
+            for (int right = 0; right < nums.Length; right++)
             {
-                if (nums[i] != 0)
+                if (nums[right] != 0)
                 {
-                    int temp = nums[index];
-                    nums[index] = nums[i];
-                    nums[i] = temp;
-                    index++;
-                }
+                    if (nums[left] == 0){
+                nums[left] = nums[right];
+                nums[right] = 0;
             }
+            left++;
         }
+    }
+}
         /// <summary>
         /// https://leetcode-cn.com/leetbook/read/top-interview-questions-easy/x2jrse/
         /// </summary>
