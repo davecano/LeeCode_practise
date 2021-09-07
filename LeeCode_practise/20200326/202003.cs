@@ -24,6 +24,121 @@ namespace _20200326
 
 
     }
+    #region asp.net core中间件
+    public delegate Task ResquestDelegate(HttpContext context);
+
+    public class ApplicationBuilder
+    {
+
+
+        public IList<Func<ResquestDelegate, ResquestDelegate>> _components;
+        public ResquestDelegate _endMethod;
+        public ApplicationBuilder()
+        {
+            _components = new List<Func<ResquestDelegate, ResquestDelegate>>();
+        }
+        public ApplicationBuilder Use(Func<ResquestDelegate, ResquestDelegate> middleware)
+        {
+            _components.Add(middleware);
+            return this;
+        }
+        public ApplicationBuilder Run(ResquestDelegate EndMethod)
+        {
+            _endMethod = EndMethod;
+            return this;
+        }
+
+        public ResquestDelegate Build()
+        {
+            //ResquestDelegate rd = x => x.ResponseAsync("您还未添加任何中间件！！！");
+            ResquestDelegate rd;
+            if (_endMethod == null)
+            {
+                rd = x =>
+                {
+                    Console.WriteLine("没有结束中间件！！！！！！");
+                    throw new Exception();
+                };
+            }
+            else
+            {
+                rd = _endMethod;
+            }
+
+            foreach (var middleware in _components.Reverse())
+            {
+                rd = middleware(rd);
+            }
+
+            return rd;
+        }
+    }
+
+    public class HttpContext
+    {
+        public Task ResponseAsync(string content)
+        {
+            return Task.Run(() =>
+            {
+                Console.WriteLine(content);
+            });
+        }
+    }
+
+    public static class TerminalMiddleware
+    {
+        public static void Display()
+        {
+            var _applicationBuilder = new ApplicationBuilder();
+
+            Func<ResquestDelegate, ResquestDelegate> middleware = x =>
+            {
+                //当前要执行的委托
+                ResquestDelegate _currentDelegate = async context =>
+                {
+                    // await  context.ResponseAsync("执行的第一个中间件开始");
+                    Console.WriteLine("执行的第一个中间件开始");
+                    await x(context);
+                    Console.WriteLine("执行的第一个中间件结束");
+                };
+                return _currentDelegate;
+
+            };
+            Func<ResquestDelegate, ResquestDelegate> middleware2 = x =>
+            {
+                //当前要执行的委托
+                ResquestDelegate _currentDelegate = async context =>
+                {
+                    //await context.ResponseAsync("执行的第二个中间件开始");
+                    Console.WriteLine("执行的第二个中间件开始");
+                    await x(context);
+                    Console.WriteLine("执行的第二个中间件结束");
+                };
+                return _currentDelegate;
+            };
+            try
+            {
+                _applicationBuilder.Use(middleware);
+                _applicationBuilder.Use(middleware2);
+                _applicationBuilder.Run(x =>
+                {
+                    Console.WriteLine("结束中间件");
+                    return Task.CompletedTask;
+                });
+                var lastDelegate = _applicationBuilder.Build();
+
+                lastDelegate(new HttpContext());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.ReadKey();
+            }
+
+        }
+
+    }
+    #endregion
     public class _202003
     {
 
